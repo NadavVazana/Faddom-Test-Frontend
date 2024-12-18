@@ -1,13 +1,16 @@
 <template>
-  <select @change="handleChange">
-    <option
-      v-for="(option, index) in options"
-      :key="index"
-      :value="option.value"
-    >
-      {{ option.label }}
-    </option>
-  </select>
+  <section class="select">
+    <p>{{ label }}</p>
+    <select @change="handleChange">
+      <option
+        v-for="(option, index) in options"
+        :key="index"
+        :value="option.value"
+      >
+        {{ option.label }}
+      </option>
+    </select>
+  </section>
 </template>
 
 <script lang="ts" setup>
@@ -17,6 +20,7 @@ interface SelectOption {
 }
 
 interface SelectProps {
+  label?: string;
   options: SelectOption[];
 }
 
@@ -34,4 +38,11 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.select {
+  display: flex;
+  height: 20px;
+  align-items: center;
+  gap: 10px;
+}
+</style>

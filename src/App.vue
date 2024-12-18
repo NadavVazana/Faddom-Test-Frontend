@@ -63,6 +63,7 @@ const onLoadCpuInfo = async (formData: {
     );
     isLoading.value = false;
   } catch (error: any) {
+    isLoading.value = false;
     errorMsg.value = error.response.data;
   }
 };

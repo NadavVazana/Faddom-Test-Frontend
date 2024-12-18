@@ -1,29 +1,21 @@
 <template>
   <section class="aws-cpu-form">
-    <div class="input">
-      <p>Time period:</p>
-      <Select
-        @select="onInput(InputType.TIME_PERIOD, $event)"
-        :options="selectOptions"
-      />
-    </div>
+    <Select
+      label="Time period:"
+      @select="onInput(InputType.TIME_PERIOD, $event)"
+      :options="selectOptions"
+    />
+    <Input @input="onInput(InputType.PERIOD, $event)" label="Period:" />
+    <Input @input="onInput(InputType.IP_ADDRESS, $event)" label="IP Address:" />
 
-    <div class="input">
-      <p>Period:</p>
-      <input @input="onInput(InputType.PERIOD, $event)" type="text" />
-    </div>
-
-    <div class="input">
-      <p>IP Address:</p>
-      <input @input="onInput(InputType.IP_ADDRESS, $event)" type="text" />
-      <button @click="emit('load', formData as FormData)">Load</button>
-    </div>
+    <button @click="emit('load', formData as FormData)">Load</button>
   </section>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import Select from "../common/Select.vue";
+import Input from "../common/Input.vue";
 
 const selectOptions = [
   { label: "Last Day", value: "lastDay" },
@@ -45,20 +37,21 @@ enum InputType {
   IP_ADDRESS = "ipAddress",
 }
 
-const onInput = (type: InputType, ev: any) => {
-  let inputValue: string | number;
-  switch (type) {
-    case InputType.TIME_PERIOD:
-      formData.value.timePeriod = ev;
-      break;
-    case InputType.IP_ADDRESS:
-      formData.value.ipAddress = ev.target.value;
-      break;
-    default:
-      formData.value.period = Number(ev.target.value);
+const onInput = (type: InputType, ev: string) => {
+  if (type === InputType.PERIOD) {
+    formData.value.period = +ev;
+  } else {
+    formData.value[type] = ev;
   }
 };
 
+onMounted(() => {
+  window.addEventListener("keydown", (ev) => {
+    if (ev.key === "Enter") {
+      emit("load", formData.value);
+    }
+  });
+});
 const emit = defineEmits<{
   (e: "load", formData: FormData): void;
 }>();
@@ -71,14 +64,10 @@ const emit = defineEmits<{
   flex-direction: column;
 }
 
-.input {
-  height: 20px;
-  align-items: center;
-  gap: 10px;
-  display: flex;
-}
-
 select {
+  width: 100px;
+}
+button {
   width: 100px;
 }
 </style>
